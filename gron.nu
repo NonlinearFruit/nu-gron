@@ -1,7 +1,6 @@
 export def main [object] {
   match ($object | describe) {
-    "string" => ([ [value]; [$object] ]),
-    "int" => [ [value]; [$object] ],
-    _ => ($object | transpose key value | prepend { value: {} })
+    $record if $record =~ ^record => ($object | transpose key value | prepend { value: {} }),
+    _ => [ [value]; [$object] ],
   }
 }
