@@ -198,3 +198,14 @@ export def "test nested list is gron-able" [] {
   assert equal '[0].[0]' ($result.2.key)
 }
 
+export def "test closures are gracefully handled" [] {
+  use std assert
+  use gron.nu
+  let nuon = {|x| x + 1 }
+
+  let result = gron $nuon
+
+  assert equal null ($result.0.key?)
+  assert equal closure ($result.0.value | describe)
+}
+
