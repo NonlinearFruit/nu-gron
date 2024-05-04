@@ -147,3 +147,19 @@ export def "test binary is gron-able" [] {
   assert equal $nuon ($result.0.value)
 }
 
+export def "test list is gron-able" [] {
+  use std assert
+  use gron.nu
+  let nuon = [ A B ]
+
+  let result = gron $nuon
+
+  assert equal 3 ($result | length)
+  assert equal null ($result.0.key?)
+  assert equal [] ($result.0.value)
+  assert equal '[0]' ($result.1.key)
+  assert equal 'A' ($result.1.value)
+  assert equal '[1]' ($result.2.key)
+  assert equal 'B' ($result.2.value)
+}
+
