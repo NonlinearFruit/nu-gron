@@ -1,0 +1,16 @@
+name: test
+
+on: push
+
+jobs:
+  basic-usage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.0.0
+      - uses: hustcer/setup-nu@main
+        with:
+          version: "*"
+      - run: |
+          curl https://raw.githubusercontent.com/NonlinearFruit/nuUnit/master/nuunit.nu -o nuunit.nu
+      - run: |
+          nu nuunit.nu
