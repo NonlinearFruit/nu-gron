@@ -163,3 +163,16 @@ export def "test list is gron-able" [] {
   assert equal 'B' ($result.2.value)
 }
 
+export def "test nested record is gron-able" [] {
+  use std assert
+  use gron.nu
+  let nuon = { child: { important: data } }
+
+  let result = gron $nuon
+
+  assert equal 3 ($result | length)
+  assert equal child ($result.1.key)
+  assert equal {} ($result.1.value)
+  assert equal child.important ($result.2.key)
+}
+
