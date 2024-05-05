@@ -8,14 +8,13 @@ export def main [--prefix:any=null object] {
 
 def gron-record [prefix record] {
   $record
-  | transpose key value
-  | each {|row|
+  | items {|key value|
     if $prefix != null {
-      $"($prefix).($row.key)"
+      $"($prefix).($key)"
     } else {
-      $row.key
+      $key
     }
-    | main --prefix $in $row.value
+    | main --prefix $in $value
   }
   | flatten
   | prepend { key: $prefix, value: {} }
