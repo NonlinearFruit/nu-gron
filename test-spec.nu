@@ -219,3 +219,5 @@ export def "test lazy records are gracefully handled" [] {
   assert equal "A" ($result.1.key)
   assert equal "a" ($result.1.value)
 }
+
+export use tests/ungron-spec.nu *

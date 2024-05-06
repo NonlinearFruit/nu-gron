@@ -1,4 +1,21 @@
-export def main [--prefix:any=null object] {
+export def main [--ungron --prefix:any=null object] {
+  if ($ungron) {
+    ungron $object
+  } else {
+    gron $prefix $object
+  }
+}
+
+def ungron [object] {
+  $object
+  | where key != null
+  | reduce --fold {} {|it acc|
+    $acc
+    | merge { $it.key: $it.value }
+  }
+}
+
+def gron [prefix object] {
   match ($object | describe) {
     $record if $record =~ ^record => (gron-record $prefix $object),
     $list if $list =~ ^list or $list =~ ^table => (gron-list $prefix $object),
