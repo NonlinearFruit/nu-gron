@@ -7,11 +7,16 @@ export def main [--ungron --prefix:any=null object] {
 }
 
 def ungron [object] {
+  let root = $object | where key == null | get value | first
   $object
   | where key != null
-  | reduce --fold {} {|it acc|
-    $acc
-    | merge { $it.key: $it.value }
+  | reduce --fold $root {|it acc|
+    if ($acc | describe | $in =~ ^record) {
+      $acc
+      | merge { $it.key: $it.value }
+    } else {
+      $acc ++ $it.value
+    }
   }
 }
 
