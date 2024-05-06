@@ -6,25 +6,26 @@ export def main [--ungron --prefix:any=null object] {
   }
 }
 
-def ungron [object] {
-  let root = $object | where key == null | get value | first
-  $object
-  | where key != null
-  | reduce --fold $root {|it acc|
-    if ($acc | describe | $in =~ ^record) {
-      $acc
-      | merge { $it.key: $it.value }
-    } else {
-      $acc ++ $it.value
-    }
-  }
-}
-
 def gron [prefix object] {
   match ($object | describe) {
     $record if $record =~ ^record => (gron-record $prefix $object),
     $list if $list =~ ^list or $list =~ ^table => (gron-list $prefix $object),
     _ => (gron-primative $prefix $object),
+  }
+}
+
+def ungron [object] {
+  let root = $object | where key == null | get value | first
+  $object
+  | where key != null
+  | where key !~ '[.]'
+  | reduce --fold $root {|it acc|
+    if ($acc | describe | $in =~ ^record) {
+      $acc
+      | merge (ungron-record $it.key $it.value $object)
+    } else {
+      $acc ++ $it.value
+    }
   }
 }
 
@@ -40,6 +41,21 @@ def gron-record [prefix record] {
   }
   | flatten
   | prepend { key: $prefix, value: {} }
+}
+
+def ungron-record [prefix value object] {
+  let related_rows = $object | where key != null | where key =~ $'^($prefix)\.'
+  if ($related_rows | length) == 0 {
+    { $prefix: $value }
+  } else {
+    $related_rows
+    | update key { str replace -r $'^($prefix)\.' '' }
+    | prepend { key: null, value: $value }
+    | ungron $in
+    | {
+      $prefix: $in
+    }
+  }
 }
 
 def gron-list [prefix list] {
