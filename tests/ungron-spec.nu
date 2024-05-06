@@ -1,4 +1,4 @@
-export def "test primative gron is ungronable" [] {
+export def "test primative gron is ungron-able" [] {
   use ../gron.nu
   use std assert
   let gronned = [
@@ -11,7 +11,7 @@ export def "test primative gron is ungronable" [] {
   assert equal "nothing fancy" $ungronned
 }
 
-export def "test degenerate record gron is ungronable" [] {
+export def "test degenerate record gron is ungron-able" [] {
   use ../gron.nu
   use std assert
   let gronned = [
@@ -24,7 +24,7 @@ export def "test degenerate record gron is ungronable" [] {
   assert equal {} $ungronned
 }
 
-export def "test record gron is ungronable" [] {
+export def "test record gron is ungron-able" [] {
   use ../gron.nu
   use std assert
   let gronned = [
@@ -40,7 +40,7 @@ export def "test record gron is ungronable" [] {
   assert equal B $ungronned.b
 }
 
-export def "test degenerate list gron is ungronable" [] {
+export def "test degenerate list gron is ungron-able" [] {
   use ../gron.nu
   use std assert
   let gronned = [
@@ -53,7 +53,7 @@ export def "test degenerate list gron is ungronable" [] {
   assert equal [] $ungronned
 }
 
-export def "test list gron is ungronable" [] {
+export def "test list gron is ungron-able" [] {
   use ../gron.nu
   use std assert
   let gronned = [
