@@ -1,3 +1,16 @@
+export def "test primative gron is ungronable" [] {
+  use ../gron.nu
+  use std assert
+  let gronned = [
+    [ key value ];
+    [ null, "nothing fancy" ]
+  ]
+
+  let ungronned = gron --ungron $gronned
+
+  assert equal "nothing fancy" $ungronned
+}
+
 export def "test degenerate record gron is ungronable" [] {
   use ../gron.nu
   use std assert
