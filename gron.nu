@@ -44,12 +44,12 @@ def gron-record [prefix record] {
 }
 
 def ungron-record [prefix value object] {
-  let related_rows = $object | where key != null | where key =~ $'^($prefix)\.'
+  let related_rows = $object | where key != null | where ($it.key | str starts-with $"($prefix).")
   if ($related_rows | length) == 0 {
     { $prefix: $value }
   } else {
     $related_rows
-    | update key { str replace -r $'^($prefix)\.' '' }
+    | update key { str substring ($"($prefix)." | str length).. }
     | prepend { key: null, value: $value }
     | ungron $in
     | {

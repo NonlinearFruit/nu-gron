@@ -40,6 +40,22 @@ export def "test record gron is ungron-able" [] {
   assert equal B $ungronned.b
 }
 
+export def "test record gron with regexish key is ungron-able" [] {
+  use ../gron.nu
+  use std assert
+  let gronned = [
+    [ key value ];
+    [ null {} ]
+    [ "[a-z]+" {} ]
+    [ "[a-z]+.a" A ]
+  ]
+
+  let ungronned = gron --ungron $gronned
+
+  assert equal A $ungronned."[a-z]+".a
+}
+
+
 export def "test degenerate list gron is ungron-able" [] {
   use ../gron.nu
   use std assert
