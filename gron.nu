@@ -10,7 +10,7 @@ def gron [prefix object] {
   match ($object | describe) {
     $record if $record =~ ^record => (gron-record $prefix $object),
     $list if $list =~ ^list or $list =~ ^table => (gron-list $prefix $object),
-    _ => (gron-primative $prefix $object),
+    _ => (gron-primitive $prefix $object),
   }
 }
 
@@ -86,6 +86,6 @@ def ungron-list [prefix value object] {
   }
 }
 
-def gron-primative [prefix primative] {
-  [ [key value]; [$prefix $primative] ]
+def gron-primitive [prefix primitive] {
+  [ [key value]; [$prefix $primitive] ]
 }

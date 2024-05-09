@@ -1,4 +1,4 @@
-export def "test primative gron is ungron-able" [] {
+export def "test primitive gron is ungron-able" [] {
   use ../gron.nu
   use std assert
   let gronned = [
