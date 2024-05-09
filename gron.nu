@@ -24,7 +24,7 @@ def ungron [object] {
       $acc
       | merge (ungron-record $it.key $it.value $object)
     } else {
-      $acc ++ $it.value
+      $acc ++ (ungron-list $it.key $it.value $object)
     }
   }
 }
@@ -71,6 +71,19 @@ def gron-list [prefix list] {
   }
   | flatten
   | prepend { key: $prefix, value: [] }
+}
+
+def ungron-list [prefix value object] {
+  let related_rows = $object | where key != null | where ($it.key | str starts-with $"($prefix).")
+  if ($related_rows | length) == 0 {
+    [ $value ]
+  } else {
+    $related_rows
+    | update key { str substring ($"($prefix)." | str length).. }
+    | prepend { key: null, value: $value }
+    | ungron $in
+    | [ $in ]
+  }
 }
 
 def gron-primative [prefix primative] {

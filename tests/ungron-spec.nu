@@ -84,3 +84,18 @@ export def "test nested record gron is ungron-able" [] {
   assert ($ungronned | columns | all {|key| $key != "child.a"})
   assert equal A $ungronned.child.a
 }
+
+export def "test nested list gron is ungron-able" [] {
+  use ../gron.nu
+  use std assert
+  let gronned = [
+    [ key value ];
+    [ null, [] ]
+    [ "[0]", [] ]
+    [ "[0].[0]", A ]
+  ]
+
+  let ungronned = gron --ungron $gronned
+
+  assert equal A $ungronned.0.0
+}
