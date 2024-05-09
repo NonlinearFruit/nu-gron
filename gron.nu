@@ -22,9 +22,9 @@ def ungron [object] {
   | reduce --fold $root {|it acc|
     if ($acc | describe | $in =~ ^record) {
       $acc
-      | merge (ungron-record $it.key $it.value $object)
+      | merge (filter-object-and-ungron $it.key $it.value $object | { $it.key: $in })
     } else {
-      $acc ++ (ungron-list $it.key $it.value $object)
+      $acc ++ (filter-object-and-ungron $it.key $it.value $object | [ $in ])
     }
   }
 }
@@ -43,18 +43,16 @@ def gron-record [prefix record] {
   | prepend { key: $prefix, value: {} }
 }
 
-def ungron-record [prefix value object] {
-  let related_rows = $object | where key != null | where ($it.key | str starts-with $"($prefix).")
-  if ($related_rows | length) == 0 {
-    { $prefix: $value }
+def filter-object-and-ungron [prefix value object] {
+  $object
+  | where key != null
+  | where ($it.key | str starts-with $"($prefix).")
+  | if ($in | length) == 0 {
+    $value
   } else {
-    $related_rows
-    | update key { str substring ($"($prefix)." | str length).. }
+    update key { str substring ($"($prefix)." | str length).. }
     | prepend { key: null, value: $value }
     | ungron $in
-    | {
-      $prefix: $in
-    }
   }
 }
 
@@ -71,19 +69,6 @@ def gron-list [prefix list] {
   }
   | flatten
   | prepend { key: $prefix, value: [] }
-}
-
-def ungron-list [prefix value object] {
-  let related_rows = $object | where key != null | where ($it.key | str starts-with $"($prefix).")
-  if ($related_rows | length) == 0 {
-    [ $value ]
-  } else {
-    $related_rows
-    | update key { str substring ($"($prefix)." | str length).. }
-    | prepend { key: null, value: $value }
-    | ungron $in
-    | [ $in ]
-  }
 }
 
 def gron-primitive [prefix primitive] {
