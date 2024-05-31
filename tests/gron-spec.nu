@@ -209,14 +209,3 @@ export def "test closures are gracefully handled" [] {
   assert equal closure ($result.0.value | describe)
 }
 
-export def "test lazy records are gracefully handled" [] {
-  use std assert
-  use ../gron.nu
-  let nuon = lazy make --columns [ A ] --get-value { "a" }
-
-  let result = gron $nuon
-
-  assert equal "A" ($result.1.key)
-  assert equal "a" ($result.1.value)
-}
-
